@@ -1,7 +1,6 @@
 {
   "employees": [
     {
-      "id": 1,
       "fullName": "Bishnu Prasad Mohapatro",
       "employeeId": "WTB054",
       "email": "bishnuprasadmohapatro@gmail.com",
@@ -10,13 +9,35 @@
       "department": "Tech",
       "joiningDate": "2024-08-12",
       "employeeType": "Intern",
-      "workLocation": "Bhubaneswar",
+      "workLocation": "BBSR",
       "profilePicture": "",
-      "status": "Active",
+      "profilePreview": "",
+      "status": true,
       "isAdmin": false,
-      "manager": "Shiv Charan",
-      "skills": "React, HTML, CSS, Javascript",
-      "dateOfBirth": "2002-02-15",
+      "managerId": "Shiv Charan",
+      "skills": "React Js, Java Script, HTML, CSS",
+      "dob": "2002-02-15",
+      "emergencyContact": "7978622371",
+      "id": "1"
+    },
+    {
+      "id": "e09e",
+      "fullName": "Aditya Narayan",
+      "employeeId": "WTB052",
+      "email": "aditya@gmail.com",
+      "phone": "1234567890",
+      "designation": "Associate Software Engineer",
+      "department": "Tech",
+      "joiningDate": "2025-07-18",
+      "employeeType": "Full Time",
+      "workLocation": "BBSR",
+      "profilePicture": "",
+      "profilePreview": "",
+      "status": true,
+      "isAdmin": false,
+      "managerId": "Shiv Charan",
+      "skills": "React Js, Java Script, HTML",
+      "dob": "2025-07-18",
       "emergencyContact": "7978622371"
     }
   ]

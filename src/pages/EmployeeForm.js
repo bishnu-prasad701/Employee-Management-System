@@ -8,7 +8,10 @@ import {
   MenuItem,
   Switch,
   FormControlLabel,
+  Box,
+  Checkbox,
 } from "@mui/material";
+import { Autocomplete } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -31,6 +34,7 @@ const initialState = {
   employeeType: "",
   workLocation: "",
   profilePicture: null,
+  profilePreview: "",
   status: true,
   isAdmin: false,
   managerId: "",
@@ -40,9 +44,9 @@ const initialState = {
 };
 
 const designationOptions = {
-  it: ["IT Admin"],
-  tech: ["Software Trainee", "Associate Software Engineer"],
-  hr: ["HR Assistant", "Senior HR"],
+  IT: ["IT Admin"],
+  Tech: ["Software Trainee", "Associate Software Engineer"],
+  HR: ["HR Assistant", "Senior HR"],
 };
 
 const EmployeeForm = () => {
@@ -51,7 +55,7 @@ const EmployeeForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { id } = useParams();
-  const employeeId = id ? parseInt(id) : null;
+  const employeeId = id || null; // keep string id
 
   const employees = useSelector((state) => state.employees.list);
   const existingEmployee = employees.find((emp) => emp.id === employeeId);
@@ -62,11 +66,25 @@ const EmployeeForm = () => {
   useEffect(() => {
     if (existingEmployee) {
       setFormData(existingEmployee);
-      setDesignations(
-        designationOptions[existingEmployee.department.toLowerCase()] || []
-      );
+      setDesignations(designationOptions[existingEmployee.department] || []);
     }
   }, [existingEmployee]);
+
+  useEffect(() => {
+    if (formData.department) {
+      const key = formData.department;
+      const newDesignations = designationOptions[key] || [];
+      setDesignations(newDesignations);
+
+      // Clear designation if it's no longer valid
+      if (!newDesignations.includes(formData.designation)) {
+        setFormData((prev) => ({
+          ...prev,
+          designation: "",
+        }));
+      }
+    }
+  }, [formData.department]);
 
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
@@ -86,7 +104,7 @@ const EmployeeForm = () => {
         department: value,
         designation: "", // reset designation
       }));
-      setDesignations(designationOptions[value.toLowerCase()] || []);
+      setDesignations(designationOptions[value] || []);
     } else {
       setFormData((prev) => ({
         ...prev,
@@ -123,13 +141,14 @@ const EmployeeForm = () => {
   };
 
   return (
-    <Paper elevation={3} style={{ padding: "2rem", marginTop: "2rem" }}>
+    <Box sx={{ p: 4, mt: 4, borderRadius: 2, boxShadow: 3 }}>
       <Typography variant="h5" gutterBottom>
-        {employeeId ? "Edit Employee" : "Add Employee"}
+        {employeeId ? "Update Employee" : "Add Employee"}
       </Typography>
+
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
-          {/* Text Inputs */}
+          {/* Basic Info Fields */}
           {[
             { label: "Full Name", name: "fullName" },
             { label: "Employee ID", name: "employeeId" },
@@ -141,7 +160,7 @@ const EmployeeForm = () => {
             { label: "Date of Birth", name: "dob", type: "date" },
             { label: "Emergency Contact", name: "emergencyContact" },
           ].map((field) => (
-            <Grid item xs={12} sm={6} key={field.name}>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }} key={field.name}>
               <TextField
                 fullWidth
                 label={field.label}
@@ -156,100 +175,123 @@ const EmployeeForm = () => {
             </Grid>
           ))}
 
-          {/* Department Dropdown */}
-          <Grid item xs={12} sm={6}>
-            <TextField
-              select
+          {/* Dropdowns */}
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <Autocomplete
               fullWidth
-              label="Department"
-              name="department"
-              value={formData.department}
-              onChange={handleChange}
-            >
-              {["it", "tech", "hr"].map((dept) => (
-                <MenuItem key={dept} value={dept}>
-                  {dept.toUpperCase()}
-                </MenuItem>
-              ))}
-            </TextField>
+              options={["IT", "Tech", "HR"]}
+              value={formData.department || null}
+              onChange={(e, newValue) =>
+                setFormData({ ...formData, department: newValue })
+              }
+              renderInput={(params) => (
+                <TextField {...params} label="Department" />
+              )}
+            />
           </Grid>
 
-          {/* Designation Dropdown */}
-          <Grid item xs={12} sm={6}>
-            <TextField
-              select
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <Autocomplete
               fullWidth
-              label="Designation"
-              name="designation"
-              value={formData.designation}
-              onChange={handleChange}
+              options={formData.department ? designations : []}
+              value={formData.designation || null}
+              onChange={(e, newValue) =>
+                setFormData({ ...formData, designation: newValue })
+              }
+              renderInput={(params) => (
+                <TextField {...params} label="Designation" />
+              )}
               disabled={!formData.department}
-            >
-              {designations.map((role) => (
-                <MenuItem key={role} value={role}>
-                  {role}
-                </MenuItem>
-              ))}
-            </TextField>
+            />
           </Grid>
 
-          {/* Employee Type */}
-          <Grid item xs={12} sm={6}>
-            <TextField
-              select
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <Autocomplete
               fullWidth
-              label="Employee Type"
-              name="employeeType"
-              value={formData.employeeType}
-              onChange={handleChange}
-            >
-              {["Intern", "Full Time"].map((type) => (
-                <MenuItem key={type} value={type}>
-                  {type}
-                </MenuItem>
-              ))}
-            </TextField>
+              options={["Intern", "Full Time"]}
+              value={formData.employeeType || null}
+              onChange={(e, newValue) =>
+                setFormData({ ...formData, employeeType: newValue })
+              }
+              renderInput={(params) => (
+                <TextField {...params} label="Employee Type" />
+              )}
+            />
           </Grid>
 
-          {/* Work Location */}
-          <Grid item xs={12} sm={6}>
-            <TextField
-              select
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <Autocomplete
               fullWidth
-              label="Work Location"
-              name="workLocation"
-              value={formData.workLocation}
-              onChange={handleChange}
-            >
-              {["BBSR", "Gurgaon"].map((loc) => (
-                <MenuItem key={loc} value={loc}>
-                  {loc}
-                </MenuItem>
-              ))}
-            </TextField>
+              options={["BBSR", "Gurgaon"]}
+              value={formData.workLocation || null}
+              onChange={(e, newValue) =>
+                setFormData({ ...formData, workLocation: newValue })
+              }
+              renderInput={(params) => (
+                <TextField {...params} label="Work Location" />
+              )}
+            />
           </Grid>
 
-          {/* Profile Picture Upload */}
-          <Grid item xs={12} sm={6}>
-            <Button variant="outlined" component="label" fullWidth>
-              Upload Profile Picture
-              <input
-                type="file"
-                hidden
-                accept="image/*"
-                name="profilePicture"
-                onChange={handleChange}
-              />
-            </Button>
-            {formData.profilePicture?.name && (
-              <Typography variant="caption">
-                Selected: {formData.profilePicture.name}
-              </Typography>
+          {/* Profile Picture Upload with Preview */}
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+              mb={1}
+            >
+              <Typography variant="body1">Profile Photo :</Typography>
+              <Button variant="outlined" component="label" size="small">
+                Choose File
+                <input
+                  type="file"
+                  hidden
+                  accept="image/*"
+                  name="profilePicture"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onloadend = () => {
+                        setFormData((prev) => ({
+                          ...prev,
+                          profilePicture: reader.result,
+                          profilePreview: reader.result,
+                        }));
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  }}
+                />
+              </Button>
+            </Box>
+
+            {formData.profilePreview && (
+              <Box mt={1}>
+                <img
+                  src={formData.profilePreview}
+                  alt="Profile Preview"
+                  style={{
+                    width: "100%",
+                    maxHeight: 150,
+                    objectFit: "cover",
+                    borderRadius: 8,
+                  }}
+                />
+              </Box>
             )}
           </Grid>
 
-          {/* Status Switch */}
-          <Grid item xs={12} sm={6}>
+          {/* Status Toggle */}
+          <Grid
+            size={{ xs: 12, sm: 6, md: 3 }}
+            display="flex"
+            alignItems="center"
+          >
+            <Typography variant="body1" sx={{ mr: 2 }}>
+              Status:
+            </Typography>
             <FormControlLabel
               control={
                 <Switch
@@ -263,36 +305,41 @@ const EmployeeForm = () => {
             />
           </Grid>
 
-          {/* Is Admin Dropdown */}
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              select
-              label="Is Admin"
-              name="isAdmin"
-              value={formData.isAdmin}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  isAdmin: e.target.value === "true",
-                }))
+          {/* Is Admin */}
+          <Grid
+            size={{ xs: 12, sm: 6, md: 3 }}
+            display="flex"
+            alignItems="center"
+          >
+            <Typography variant="body1" sx={{ mr: 2 }}>
+              Admin:
+            </Typography>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={formData.isAdmin}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      isAdmin: e.target.checked,
+                    }))
+                  }
+                  name="isAdmin"
+                />
               }
-            >
-              <MenuItem value="true">Yes</MenuItem>
-              <MenuItem value="false">No</MenuItem>
-            </TextField>
-          </Grid>
-
-          {/* Submit */}
-          <Grid item xs={12}>
-            <Button type="submit" variant="contained" color="primary">
-              {employeeId ? "Update Employee" : "Add Employee"}
-            </Button>
+              label="Is Admin"
+            />
           </Grid>
         </Grid>
+
+        {/* Submit Button Bottom Right */}
+        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
+          <Button type="submit" variant="contained" color="primary">
+            {employeeId ? "Update Employee" : "Add Employee"}
+          </Button>
+        </Box>
       </form>
-    </Paper>
+    </Box>
   );
 };
-
 export default EmployeeForm;
