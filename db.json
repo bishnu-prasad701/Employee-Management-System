@@ -1,0 +1,23 @@
+{
+  "employees": [
+    {
+      "id": 1,
+      "fullName": "Bishnu Prasad Mohapatro",
+      "employeeId": "WTB054",
+      "email": "bishnuprasadmohapatro@gmail.com",
+      "phone": "7978622371",
+      "designation": "Software Trainee",
+      "department": "Tech",
+      "joiningDate": "2024-08-12",
+      "employeeType": "Intern",
+      "workLocation": "Bhubaneswar",
+      "profilePicture": "",
+      "status": "Active",
+      "isAdmin": false,
+      "manager": "Shiv Charan",
+      "skills": "React, HTML, CSS, Javascript",
+      "dateOfBirth": "2002-02-15",
+      "emergencyContact": "7978622371"
+    }
+  ]
+}
