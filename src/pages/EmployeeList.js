@@ -15,8 +15,14 @@ import {
   Box,
   Grid,
   Autocomplete,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Chip,
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
+import InfoIcon from "@mui/icons-material/Info";
 import { useNavigate } from "react-router-dom";
 import {
   useGetEmployeesQuery,
@@ -78,6 +84,9 @@ const EmployeeList = () => {
   };
 
   const filteredEmployees = employees.filter((emp) => {
+    // Convert filters.status string to boolean only if status filter is set
+    let statusBool = filters.status === "Active" ? true : false;
+
     return (
       emp.fullName.toLowerCase().includes(search.toLowerCase()) &&
       (filters.department ? emp.department === filters.department : true) &&
@@ -85,10 +94,23 @@ const EmployeeList = () => {
       (filters.employeeType
         ? emp.employeeType === filters.employeeType
         : true) &&
-      (filters.status ? emp.status === filters.status : true) &&
+      (filters.status ? emp.status === statusBool : true) &&
       (filters.location ? emp.workLocation === filters.location : true)
     );
   });
+
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleOpenDetails = (emp) => {
+    setSelectedEmployee(emp);
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setSelectedEmployee(null);
+  };
 
   return (
     <Paper sx={{ padding: 3, marginTop: 4 }}>
@@ -209,6 +231,9 @@ const EmployeeList = () => {
                 <TableCell sx={{ color: "#fff" }}>Phone</TableCell>
                 <TableCell sx={{ color: "#fff" }}>Department</TableCell>
                 <TableCell sx={{ color: "#fff" }}>Designation</TableCell>
+                <TableCell sx={{ color: "#fff" }}>Employee Type</TableCell>
+                <TableCell sx={{ color: "#fff" }}>Status</TableCell>
+                <TableCell sx={{ color: "#fff" }}>Location</TableCell>
                 <TableCell sx={{ color: "#fff" }}>Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -226,6 +251,15 @@ const EmployeeList = () => {
                   <TableCell>{emp.phone}</TableCell>
                   <TableCell>{emp.department}</TableCell>
                   <TableCell>{emp.designation}</TableCell>
+                  <TableCell>{emp.employeeType}</TableCell>
+                  <TableCell>
+                    <Chip
+                      label={emp.status ? "Active" : "Inactive"}
+                      color={emp.status ? "success" : "default"}
+                      size="small"
+                    />
+                  </TableCell>
+                  <TableCell>{emp.workLocation}</TableCell>
                   <TableCell>
                     <IconButton
                       color="primary"
@@ -239,6 +273,12 @@ const EmployeeList = () => {
                     >
                       <Delete />
                     </IconButton>
+                    <IconButton
+                      color="info"
+                      onClick={() => handleOpenDetails(emp)}
+                    >
+                      <InfoIcon />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               ))}
@@ -246,6 +286,84 @@ const EmployeeList = () => {
           </Table>
         </TableContainer>
       )}
+      <Dialog
+        open={openModal}
+        onClose={handleCloseModal}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle>Employee Details</DialogTitle>
+        <DialogContent dividers>
+          {selectedEmployee && (
+            <Box display="flex" flexDirection="column" gap={1.5}>
+              <Box display="flex" alignItems="center" gap={2}>
+                <Avatar
+                  src={selectedEmployee.profilePreview}
+                  sx={{ width: 64, height: 64 }}
+                >
+                  {!selectedEmployee.profilePreview &&
+                    selectedEmployee.fullName?.[0]}
+                </Avatar>
+                <Typography variant="h6">
+                  {selectedEmployee.fullName}
+                </Typography>
+              </Box>
+
+              <Typography>
+                <strong>Employee ID:</strong> {selectedEmployee.employeeId}
+              </Typography>
+              <Typography>
+                <strong>Email:</strong> {selectedEmployee.email}
+              </Typography>
+              <Typography>
+                <strong>Phone:</strong> {selectedEmployee.phone}
+              </Typography>
+              <Typography>
+                <strong>Department:</strong> {selectedEmployee.department}
+              </Typography>
+              <Typography>
+                <strong>Designation:</strong> {selectedEmployee.designation}
+              </Typography>
+              <Typography>
+                <strong>Joining Date:</strong> {selectedEmployee.joiningDate}
+              </Typography>
+              <Typography>
+                <strong>Employee Type:</strong> {selectedEmployee.employeeType}
+              </Typography>
+              <Typography>
+                <strong>Work Location:</strong> {selectedEmployee.workLocation}
+              </Typography>
+              <Typography>
+                <strong>Status:</strong>{" "}
+                {selectedEmployee.status ? "Active" : "Inactive"}
+              </Typography>
+              <Typography>
+                <strong>Is Admin:</strong>{" "}
+                {selectedEmployee.isAdmin ? "Yes" : "No"}
+              </Typography>
+              <Typography>
+                <strong>Manager:</strong> {selectedEmployee.managerId}
+              </Typography>
+              <Typography>
+                <strong>Skills:</strong> {selectedEmployee.skills}
+              </Typography>
+              <Typography>
+                <strong>Date of Birth:</strong> {selectedEmployee.dob}
+              </Typography>
+              <Typography>
+                <strong>Emergency Contact:</strong>{" "}
+                {selectedEmployee.emergencyContact}
+              </Typography>
+            </Box>
+          )}
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={handleCloseModal} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Paper>
   );
 };
