@@ -143,6 +143,7 @@ const EmployeeForm = () => {
   };
 
   return (
+    // <Box sx={{ p: 4, mt: 4, borderRadius: 2, boxShadow: 3 }}>
     <Box sx={{ p: 4, mt: 4, borderRadius: 2, boxShadow: 3 }}>
       <Typography variant="h5" gutterBottom>
         {employeeId ? "Update Employee" : "Add Employee"}
