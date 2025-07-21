@@ -1,12 +1,11 @@
 import { AppBar, Toolbar, Typography, Box, Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Header = () => {
-  const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn");
-    navigate("/");
+    logout(); // calls the AuthContext logout method which handles redirection and state reset
   };
 
   return (

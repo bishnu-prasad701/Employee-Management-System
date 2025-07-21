@@ -133,14 +133,24 @@ const EmployeeForm = () => {
       const errors = {};
 
       for (const field in formData) {
+        // Skip profilePicture here to handle it separately
         if (
-          formData[field] === "" ||
-          formData[field] === null ||
-          formData[field] === undefined
+          field !== "profilePicture" &&
+          (formData[field] === "" ||
+            formData[field] === null ||
+            formData[field] === undefined)
         ) {
           errors[field] = "This field is required";
         }
       }
+
+      // Require profilePicture only if adding a new employee (no employeeId)
+      if (!employeeId) {
+        if (!formData.profilePicture) {
+          errors.profilePicture = "This field is required";
+        }
+      }
+
       // Email validation
       if (
         formData.email &&
@@ -167,6 +177,7 @@ const EmployeeForm = () => {
       }
       return errors;
     };
+
     // Run validation
     const errors = validateForm(formData);
     if (Object.keys(errors).length > 0) {
@@ -177,7 +188,10 @@ const EmployeeForm = () => {
     try {
       const submissionData = {
         ...formData,
-        profilePicture: formData.profilePicture?.name || "",
+        profilePicture:
+          formData.profilePicture && formData.profilePicture instanceof File
+            ? formData.profilePicture.name
+            : formData.profilePicture || "",
       };
 
       if (employeeId) {
@@ -191,7 +205,7 @@ const EmployeeForm = () => {
         alert("Employee added successfully");
       }
 
-      navigate("/employeelist");
+      navigate("/employeeList");
     } catch (err) {
       console.error("Failed to submit:", err);
       alert("Error submitting form");

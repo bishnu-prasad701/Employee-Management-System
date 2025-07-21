@@ -9,10 +9,11 @@ import {
 import LoginPage from "./pages/LoginPage";
 import EmployeeList from "./pages/EmployeeList";
 import EmployeeForm from "./pages/EmployeeForm";
-import ProtectedRoute from "./components/ProtectedRote";
+import ProtectedRoute from "./components/ProtectedRoute";
 import Header from "./commonComponents/Header";
 import Sidebar from "./commonComponents/Sidebar";
 import { Box } from "@mui/material";
+import { useAuth } from "./context/AuthContext"; // ✅ use context
 
 // Layout constants
 const SIDEBAR_COLLAPSED_WIDTH = 60;
@@ -21,11 +22,9 @@ const HEADER_HEIGHT = 14;
 
 // Wrapper to include header & sidebar only if logged in
 const LayoutWrapper = ({ children }) => {
-  const location = useLocation();
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+  const { isLoggedIn } = useAuth(); // ✅ use context
   const [open, setOpen] = useState(false);
 
-  // If not logged in, don't show layout components (header/sidebar)
   if (!isLoggedIn) {
     return children;
   }
@@ -55,7 +54,7 @@ const LayoutWrapper = ({ children }) => {
 };
 
 function App() {
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+  const { isLoggedIn } = useAuth(); // ✅ use context
 
   return (
     <BrowserRouter>
@@ -64,11 +63,11 @@ function App() {
           <Route
             path="/"
             element={
-              isLoggedIn ? <Navigate to="/employeelist" /> : <LoginPage />
+              isLoggedIn ? <Navigate to="/employeeList" /> : <LoginPage />
             }
           />
           <Route
-            path="/employeelist"
+            path="/employeeList"
             element={
               <ProtectedRoute>
                 <EmployeeList />

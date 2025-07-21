@@ -36,6 +36,7 @@ import { useDispatch, useSelector } from "react-redux";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import TablePagination from "@mui/material/TablePagination";
 
 const EmployeeList = () => {
   const navigate = useNavigate();
@@ -66,6 +67,16 @@ const EmployeeList = () => {
   const employeeTypes = ["Intern", "Full Time"];
   const statuses = ["Active", "Inactive"];
   const locations = ["BBSR", "Gurgaon"];
+
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
 
   useEffect(() => {
     if (apiData) {
@@ -304,62 +315,73 @@ const EmployeeList = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredEmployees.map((emp, index) => (
-                <TableRow key={emp.id}>
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>
-                    <Avatar src={emp.profilePreview} alt={emp.fullName}>
-                      {!emp.profilePreview && emp.fullName?.[0]}
-                    </Avatar>
-                  </TableCell>
-                  <TableCell>{emp.fullName}</TableCell>
-                  <TableCell>{emp.email}</TableCell>
-                  <TableCell>{emp.phone}</TableCell>
-                  <TableCell>{emp.department}</TableCell>
-                  <TableCell>{emp.designation}</TableCell>
-                  <TableCell>{emp.employeeType}</TableCell>
-                  <TableCell>
-                    <Chip
-                      label={emp.status ? "Active" : "Inactive"}
-                      color={emp.status ? "success" : "default"}
-                      size="small"
-                    />
-                  </TableCell>
-                  <TableCell>{emp.workLocation}</TableCell>
-                  <TableCell>
-                    <IconButton
-                      color="primary"
-                      onClick={() => handleEdit(emp.id)}
-                    >
-                      <Edit />
-                    </IconButton>
-                    <IconButton
-                      color="error"
-                      onClick={() => handleDelete(emp.id)}
-                    >
-                      <Delete />
-                    </IconButton>
-                    <IconButton
-                      color="info"
-                      onClick={() => handleOpenDetails(emp)}
-                    >
-                      <InfoIcon />
-                    </IconButton>
-                    <Button
-                      size="small"
-                      variant="outlined"
-                      sx={{ mt: 1 }}
-                      onClick={() => generateIdCardPDF(emp)}
-                    >
-                      ID Card PDF
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {filteredEmployees
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((emp, index) => (
+                  <TableRow key={emp.id}>
+                    <TableCell>{page * rowsPerPage + index + 1}</TableCell>
+                    <TableCell>
+                      <Avatar src={emp.profilePreview} alt={emp.fullName}>
+                        {!emp.profilePreview && emp.fullName?.[0]}
+                      </Avatar>
+                    </TableCell>
+                    <TableCell>{emp.fullName}</TableCell>
+                    <TableCell>{emp.email}</TableCell>
+                    <TableCell>{emp.phone}</TableCell>
+                    <TableCell>{emp.department}</TableCell>
+                    <TableCell>{emp.designation}</TableCell>
+                    <TableCell>{emp.employeeType}</TableCell>
+                    <TableCell>
+                      <Chip
+                        label={emp.status ? "Active" : "Inactive"}
+                        color={emp.status ? "success" : "default"}
+                        size="small"
+                      />
+                    </TableCell>
+                    <TableCell>{emp.workLocation}</TableCell>
+                    <TableCell>
+                      <IconButton
+                        color="primary"
+                        onClick={() => handleEdit(emp.id)}
+                      >
+                        <Edit />
+                      </IconButton>
+                      <IconButton
+                        color="error"
+                        onClick={() => handleDelete(emp.id)}
+                      >
+                        <Delete />
+                      </IconButton>
+                      <IconButton
+                        color="info"
+                        onClick={() => handleOpenDetails(emp)}
+                      >
+                        <InfoIcon />
+                      </IconButton>
+                      <Button
+                        size="small"
+                        variant="outlined"
+                        sx={{ mt: 1 }}
+                        onClick={() => generateIdCardPDF(emp)}
+                      >
+                        ID Card PDF
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </TableContainer>
       )}
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={filteredEmployees.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
       <Dialog
         open={openModal}
         onClose={handleCloseModal}

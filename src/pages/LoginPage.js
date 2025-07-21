@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   Box,
   TextField,
@@ -10,9 +10,12 @@ import {
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import backgroundImage from "../img/backgroundimage.jpg";
+import { useAuth } from "../context/AuthContext";
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
+
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
@@ -43,7 +46,7 @@ const LoginPage = () => {
     }
 
     if (email === "admin@gmail.com" && password === "admin123") {
-      localStorage.setItem("isLoggedIn", "true");
+      login(); // ✅ use AuthContext login method
       navigate("/employeeList");
     } else {
       setErrors({ password: "Invalid email or password" });
