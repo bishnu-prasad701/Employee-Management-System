@@ -85,7 +85,7 @@ const LoginPage = () => {
           gutterBottom
           sx={{ color: "#007bff" }}
         >
-          Employee Login
+          <strong>Employee Login</strong>
         </Typography>
 
         <form onSubmit={handleSubmit}>

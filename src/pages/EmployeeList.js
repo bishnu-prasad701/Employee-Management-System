@@ -76,6 +76,11 @@ const EmployeeList = () => {
   const handleEdit = (id) => navigate(`/employeeform/edit/${id}`);
 
   const handleDelete = async (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this employee?"
+    );
+    if (!confirmDelete) return;
+
     try {
       await deleteEmployeeApi(id).unwrap();
       dispatch(deleteEmployeeFromStore(id));

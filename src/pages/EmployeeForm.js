@@ -8,6 +8,8 @@ import {
   MenuItem,
   Switch,
   FormControlLabel,
+  FormControl,
+  FormHelperText,
   Box,
   Checkbox,
   Divider,
@@ -41,7 +43,7 @@ const initialState = {
   isAdmin: false,
   managerId: "",
   skills: "",
-  dob: "",
+  dateOfBirth: "",
   emergencyContact: "",
 };
 
@@ -58,12 +60,13 @@ const EmployeeForm = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
   const employeeId = id || null; // keep string id
-
   const employees = useSelector((state) => state.employees.list);
   const existingEmployee = employees.find((emp) => emp.id === employeeId);
-
   const [addEmployeeApi] = useAddEmployeeMutation();
   const [updateEmployeeApi] = useUpdateEmployeeMutation();
+  const [formErrors, setFormErrors] = useState({});
+
+  const disabled = !formData.department;
 
   useEffect(() => {
     if (existingEmployee) {
@@ -90,6 +93,7 @@ const EmployeeForm = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
+
     if (name === "profilePicture") {
       setFormData((prev) => ({
         ...prev,
@@ -107,6 +111,13 @@ const EmployeeForm = () => {
         designation: "", // reset designation
       }));
       setDesignations(designationOptions[value] || []);
+    } else if (name === "phone" || name === "emergencyContact") {
+      // Restrict to digits only and max 10 characters
+      const numericValue = value.replace(/\D/g, "").slice(0, 10);
+      setFormData((prev) => ({
+        ...prev,
+        [name]: numericValue,
+      }));
     } else {
       setFormData((prev) => ({
         ...prev,
@@ -117,6 +128,51 @@ const EmployeeForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const validateForm = (formData) => {
+      const errors = {};
+
+      for (const field in formData) {
+        if (
+          formData[field] === "" ||
+          formData[field] === null ||
+          formData[field] === undefined
+        ) {
+          errors[field] = "This field is required";
+        }
+      }
+      // Email validation
+      if (
+        formData.email &&
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
+      ) {
+        errors.email = "Enter a valid email with @ and .";
+      }
+      // Phone validation (10-digit Indian number)
+      const phoneRegex = /^[6-9]\d{9}$/;
+      if (!phoneRegex.test(formData.phone || "")) {
+        errors.phone = "Enter a valid 10-digit Indian number";
+      }
+      if (!phoneRegex.test(formData.emergencyContact || "")) {
+        errors.emergencyContact = "Enter a valid 10-digit Indian number";
+      }
+
+      // Date validation
+      const today = new Date().toISOString().split("T")[0];
+      if (formData.dateOfBirth && formData.dateOfBirth > today) {
+        errors.dateOfBirth = "Date of birth cannot be in the future";
+      }
+      if (formData.joiningDate && formData.joiningDate > today) {
+        errors.joiningDate = "Joining date cannot be in the future";
+      }
+      return errors;
+    };
+    // Run validation
+    const errors = validateForm(formData);
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
 
     try {
       const submissionData = {
@@ -143,28 +199,25 @@ const EmployeeForm = () => {
   };
 
   return (
-    // <Box sx={{ p: 4, mt: 4, borderRadius: 2, boxShadow: 3 }}>
     <Box sx={{ p: 4, mt: 4, borderRadius: 2, boxShadow: 3 }}>
       <Typography variant="h5" gutterBottom>
         {employeeId ? "Update Employee" : "Add Employee"}
       </Typography>
 
       <form onSubmit={handleSubmit}>
-        {/* Personal Info Section */}
         <Box mb={4}>
           <Typography variant="h6" gutterBottom>
             Personal Info
           </Typography>
           <Divider sx={{ mb: 2 }} />
           <Grid container spacing={2}>
-            {/* Left Fields */}
             <Grid size={{ xs: 12, md: 8 }}>
               <Grid container spacing={2}>
                 {[
                   { label: "Full Name", name: "fullName" },
                   { label: "Email Address", name: "email", type: "email" },
                   { label: "Phone Number", name: "phone" },
-                  { label: "Date of Birth", name: "dob", type: "date" },
+                  { label: "Date of Birth", name: "dateOfBirth", type: "date" },
                   { label: "Emergency Contact", name: "emergencyContact" },
                 ].map((field) => (
                   <Grid size={{ xs: 12, sm: 6 }} key={field.name}>
@@ -175,6 +228,8 @@ const EmployeeForm = () => {
                       type={field.type || "text"}
                       value={formData[field.name]}
                       onChange={handleChange}
+                      error={!!formErrors[field.name]}
+                      helperText={formErrors[field.name]}
                       InputLabelProps={
                         field.type === "date" ? { shrink: true } : undefined
                       }
@@ -183,60 +238,70 @@ const EmployeeForm = () => {
                 ))}
               </Grid>
             </Grid>
-
-            {/* Right: Profile Picture */}
             <Grid size={{ xs: 12, md: 4 }}>
-              <Box
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                justifyContent="center"
-                sx={{
-                  border: "1px dashed #ccc",
-                  borderRadius: "8px",
-                  p: 2,
-                  height: "100%",
-                }}
+              <FormControl
+                fullWidth
+                error={!!formErrors.profilePicture}
+                sx={{ mt: 2 }}
               >
-                <Avatar
-                  src={formData.profilePreview}
-                  sx={{ width: 100, height: 100, mb: 2 }}
-                />
-                <Button variant="outlined" component="label">
-                  Upload Picture
-                  <input
-                    hidden
-                    accept="image/*"
-                    type="file"
-                    onChange={(e) => {
-                      const file = e.target.files[0];
-                      if (file) {
-                        const reader = new FileReader();
-                        reader.onloadend = () => {
-                          setFormData((prev) => ({
-                            ...prev,
-                            profilePicture: reader.result,
-                            profilePreview: reader.result,
-                          }));
-                        };
-                        reader.readAsDataURL(file);
-                      }
-                    }}
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  alignItems="center"
+                  justifyContent="center"
+                  sx={{
+                    border: "1px dashed #ccc",
+                    borderRadius: "8px",
+                    p: 2,
+                    height: "100%",
+                  }}
+                >
+                  <Avatar
+                    src={formData.profilePreview}
+                    sx={{ width: 100, height: 100, mb: 2 }}
                   />
-                </Button>
-              </Box>
+                  <Button variant="outlined" component="label">
+                    Upload Picture
+                    <input
+                      hidden
+                      accept="image/*"
+                      type="file"
+                      onChange={(e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            setFormData((prev) => ({
+                              ...prev,
+                              profilePicture: reader.result,
+                              profilePreview: reader.result,
+                            }));
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                    />
+                  </Button>
+                </Box>
+                {formData.profilePicture && !formErrors.profilePicture && (
+                  <FormHelperText sx={{ color: "green" }}>
+                    Picture uploaded
+                  </FormHelperText>
+                )}
+                {formErrors.profilePicture && (
+                  <FormHelperText>{formErrors.profilePicture}</FormHelperText>
+                )}
+              </FormControl>
             </Grid>
           </Grid>
         </Box>
 
-        {/* Job Details Section */}
         <Box mb={4}>
           <Typography variant="h6" gutterBottom>
             Job Details
           </Typography>
           <Divider sx={{ mb: 2 }} />
           <Grid container spacing={2}>
-            {/* Employee ID */}
             <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <TextField
                 fullWidth
@@ -244,10 +309,11 @@ const EmployeeForm = () => {
                 name="employeeId"
                 value={formData.employeeId}
                 onChange={handleChange}
+                error={!!formErrors.employeeId}
+                helperText={formErrors.employeeId}
               />
             </Grid>
 
-            {/* Department */}
             <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <Autocomplete
                 fullWidth
@@ -257,12 +323,16 @@ const EmployeeForm = () => {
                   setFormData({ ...formData, department: newValue })
                 }
                 renderInput={(params) => (
-                  <TextField {...params} label="Department" />
+                  <TextField
+                    {...params}
+                    label="Department"
+                    error={!!formErrors.department}
+                    helperText={formErrors.department}
+                  />
                 )}
               />
             </Grid>
 
-            {/* Designation */}
             <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <Autocomplete
                 fullWidth
@@ -272,13 +342,17 @@ const EmployeeForm = () => {
                   setFormData({ ...formData, designation: newValue })
                 }
                 renderInput={(params) => (
-                  <TextField {...params} label="Designation" />
+                  <TextField
+                    {...params}
+                    label="Designation"
+                    error={!disabled && !!formErrors.designation}
+                    helperText={!disabled && formErrors.designation}
+                  />
                 )}
                 disabled={!formData.department}
               />
             </Grid>
 
-            {/* Employee Type */}
             <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <Autocomplete
                 fullWidth
@@ -288,12 +362,16 @@ const EmployeeForm = () => {
                   setFormData({ ...formData, employeeType: newValue })
                 }
                 renderInput={(params) => (
-                  <TextField {...params} label="Employee Type" />
+                  <TextField
+                    {...params}
+                    label="Employee Type"
+                    error={!!formErrors.employeeType}
+                    helperText={formErrors.employeeType}
+                  />
                 )}
               />
             </Grid>
 
-            {/* Work Location */}
             <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <Autocomplete
                 fullWidth
@@ -303,12 +381,16 @@ const EmployeeForm = () => {
                   setFormData({ ...formData, workLocation: newValue })
                 }
                 renderInput={(params) => (
-                  <TextField {...params} label="Work Location" />
+                  <TextField
+                    {...params}
+                    label="Work Location"
+                    error={!!formErrors.workLocation}
+                    helperText={formErrors.workLocation}
+                  />
                 )}
               />
             </Grid>
 
-            {/* Joining Date */}
             <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <TextField
                 fullWidth
@@ -318,52 +400,57 @@ const EmployeeForm = () => {
                 value={formData.joiningDate}
                 onChange={handleChange}
                 InputLabelProps={{ shrink: true }}
+                error={!!formErrors.joiningDate}
+                helperText={formErrors.joiningDate}
               />
             </Grid>
 
-            {/* Status Switch */}
             <Grid
               size={{ xs: 12, sm: 6, md: 3 }}
               display="flex"
               alignItems="center"
             >
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={formData.status}
-                    onChange={handleChange}
-                    name="status"
-                    color="primary"
-                  />
-                }
-                label={formData.status ? "Active" : "Inactive"}
-              />
+              <Box display="flex" alignItems="center" gap={1}>
+                <Typography>Status:</Typography>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={formData.status}
+                      onChange={handleChange}
+                      name="status"
+                      color="primary"
+                    />
+                  }
+                  label={formData.status ? "Active" : "Inactive"}
+                />
+              </Box>
             </Grid>
 
-            {/* Is Admin */}
             <Grid
               size={{ xs: 12, sm: 6, md: 3 }}
               display="flex"
               alignItems="center"
             >
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={formData.isAdmin}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        isAdmin: e.target.checked,
-                      }))
-                    }
-                    name="isAdmin"
-                  />
-                }
-                label="Is Admin"
-              />
+              <Box display="flex" alignItems="center" gap={1}>
+                <Typography>Admin:</Typography>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={formData.isAdmin}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          isAdmin: e.target.checked,
+                        }))
+                      }
+                      name="isAdmin"
+                    />
+                  }
+                  label="Is Admin"
+                />
+              </Box>
             </Grid>
 
-            {/* Manager ID */}
             <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <TextField
                 fullWidth
@@ -371,10 +458,11 @@ const EmployeeForm = () => {
                 name="managerId"
                 value={formData.managerId}
                 onChange={handleChange}
+                error={!!formErrors.managerId}
+                helperText={formErrors.managerId}
               />
             </Grid>
 
-            {/* Skills */}
             <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <TextField
                 fullWidth
@@ -382,13 +470,27 @@ const EmployeeForm = () => {
                 name="skills"
                 value={formData.skills}
                 onChange={handleChange}
+                error={!!formErrors.skills}
+                helperText={formErrors.skills}
               />
             </Grid>
           </Grid>
         </Box>
 
-        {/* Submit Button */}
-        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
+        <Box
+          sx={{ display: "flex", justifyContent: "flex-end", gap: 2, mt: 3 }}
+        >
+          <Button
+            variant="outlined"
+            color="error"
+            onClick={() => {
+              setFormData(initialState);
+              setDesignations([]);
+            }}
+          >
+            Clear Form
+          </Button>
+
           <Button type="submit" variant="contained" color="primary">
             {employeeId ? "Update Employee" : "Add Employee"}
           </Button>
