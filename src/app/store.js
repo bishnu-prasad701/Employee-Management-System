@@ -5,8 +5,8 @@ import { employeeApi } from "../services/employeeapi";
 export const store = configureStore({
   reducer: {
     employees: employeeReducer,
-    [employeeApi.reducerPath]: employeeApi.reducer, // ✅ RTK Query reducer
+    [employeeApi.reducerPath]: employeeApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(employeeApi.middleware), // ✅ RTK Query middleware
+    getDefaultMiddleware().concat(employeeApi.middleware),
 });
