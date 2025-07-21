@@ -33,6 +33,9 @@ import {
   deleteEmployee as deleteEmployeeFromStore,
 } from "../features/employees/employeeSlice";
 import { useDispatch, useSelector } from "react-redux";
+import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 const EmployeeList = () => {
   const navigate = useNavigate();
@@ -112,8 +115,61 @@ const EmployeeList = () => {
     setSelectedEmployee(null);
   };
 
+  const handleExportExcel = () => {
+    const exportData = filteredEmployees.map(
+      ({ id, profilePreview, ...emp }) => emp
+    );
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Employees");
+    XLSX.writeFile(workbook, "EmployeeList.xlsx");
+  };
+
+  const generateIdCardPDF = async (emp) => {
+    const idCard = document.createElement("div");
+    idCard.style.width = "350px";
+    idCard.style.height = "200px";
+    idCard.style.padding = "16px";
+    idCard.style.display = "flex";
+    idCard.style.flexDirection = "row";
+    idCard.style.alignItems = "center";
+    idCard.style.border = "1px solid #ccc";
+    idCard.style.borderRadius = "8px";
+    idCard.style.background = "#f9f9f9";
+    idCard.style.fontFamily = "Arial";
+
+    idCard.innerHTML = `
+    <div style="flex: 0 0 80px; margin-right: 16px;">
+      <img src="${
+        emp.profilePreview || ""
+      }" alt="Profile" style="width: 80px; height: 80px; border-radius: 50%; border: 1px solid #333;" />
+    </div>
+    <div style="flex: 1;">
+      <div><strong>Name:</strong> ${emp.fullName}</div>
+      <div><strong>Emp ID:</strong> ${emp.employeeId}</div>
+      <div><strong>Phone:</strong> ${emp.phone}</div>
+      <div><strong>Dept:</strong> ${emp.department}</div>
+      <div><strong>Location:</strong> ${emp.workLocation}</div>
+      <div><strong>Emergency:</strong> ${emp.emergencyContact}</div>
+    </div>
+  `;
+
+    document.body.appendChild(idCard);
+    const canvas = await html2canvas(idCard);
+    const imgData = canvas.toDataURL("image/png");
+
+    const pdf = new jsPDF({
+      orientation: "landscape",
+      unit: "px",
+      format: [350, 200],
+    });
+
+    pdf.addImage(imgData, "PNG", 0, 0, 350, 200);
+    pdf.save(`ID_Card_${emp.employeeId || emp.fullName}.pdf`);
+    document.body.removeChild(idCard);
+  };
+
   return (
-    // <Paper sx={{ padding: 3, marginTop: 4 }}>
     <Paper sx={{ padding: 3, marginTop: 4 }}>
       <Box
         display="flex"
@@ -123,7 +179,11 @@ const EmployeeList = () => {
       >
         <Typography variant="h5">Employee List</Typography>
         <Box display="flex" gap={2}>
-          <Button variant="outlined" color="success">
+          <Button
+            variant="outlined"
+            color="success"
+            onClick={handleExportExcel}
+          >
             Export Excel
           </Button>
           <Button
@@ -280,6 +340,14 @@ const EmployeeList = () => {
                     >
                       <InfoIcon />
                     </IconButton>
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      sx={{ mt: 1 }}
+                      onClick={() => generateIdCardPDF(emp)}
+                    >
+                      ID Card PDF
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}

@@ -1,25 +1,3 @@
-// import { Drawer, List, ListItemButton, ListItemText } from "@mui/material";
-// import { useNavigate } from "react-router-dom";
-
-// const Sidebar = () => {
-//   const navigate = useNavigate();
-
-//   return (
-//     <Drawer variant="permanent" anchor="left">
-//       <List>
-//         <ListItemButton onClick={() => navigate("/employeeList")}>
-//           <ListItemText primary="Employee List" />
-//         </ListItemButton>
-//         <ListItemButton onClick={() => navigate("/employeeform/add")}>
-//           <ListItemText primary="Add Employee" />
-//         </ListItemButton>
-//       </List>
-//     </Drawer>
-//   );
-// };
-
-// export default Sidebar;
-
 import React from "react";
 import {
   Drawer,
@@ -73,7 +51,7 @@ const Sidebar = ({ open, setOpen }) => {
           width: open ? 180 : 60,
           boxSizing: "border-box",
           transition: "width 0.3s ease",
-          backgroundColor: "#1976d2", // MUI primary blue
+          backgroundColor: "#FF9F40",
           color: "#fff",
         },
       }}
@@ -83,15 +61,12 @@ const Sidebar = ({ open, setOpen }) => {
           <ListItem key={label} disablePadding>
             <ListItemButton
               onClick={() => navigate(path)}
-              selected={location.pathname === path}
               sx={{
                 justifyContent: open ? "initial" : "center",
                 px: 2.5,
-                "&.Mui-selected": {
-                  backgroundColor: "#1565c0",
-                  "&:hover": { backgroundColor: "#0d47a1" },
+                "&:hover": {
+                  backgroundColor: "#FFD580", // Hover color
                 },
-                "&:hover": { backgroundColor: "#2196f3" },
               }}
             >
               <ListItemIcon
