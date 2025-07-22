@@ -13,16 +13,11 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Header from "./commonComponents/Header";
 import Sidebar from "./commonComponents/Sidebar";
 import { Box } from "@mui/material";
-import { useAuth } from "./context/AuthContext"; // ✅ use context
-
-// Layout constants
-const SIDEBAR_COLLAPSED_WIDTH = 60;
-const SIDEBAR_EXPANDED_WIDTH = 180;
-const HEADER_HEIGHT = 14;
+import { useAuth } from "./context/AuthContext";
 
 // Wrapper to include header & sidebar only if logged in
 const LayoutWrapper = ({ children }) => {
-  const { isLoggedIn } = useAuth(); // ✅ use context
+  const { isLoggedIn } = useAuth();
   const [open, setOpen] = useState(false);
 
   if (!isLoggedIn) {
@@ -38,11 +33,8 @@ const LayoutWrapper = ({ children }) => {
           component="main"
           sx={{
             flexGrow: 1,
-            p: 3,
-            mt: `${HEADER_HEIGHT}px`,
-            ml: open
-              ? `${SIDEBAR_EXPANDED_WIDTH}px`
-              : `${SIDEBAR_COLLAPSED_WIDTH}px`,
+            mt: 3,
+            ml: `${open ? 20 : 20}px`,
             transition: "margin-left 0.3s ease",
           }}
         >
@@ -54,7 +46,7 @@ const LayoutWrapper = ({ children }) => {
 };
 
 function App() {
-  const { isLoggedIn } = useAuth(); // ✅ use context
+  const { isLoggedIn } = useAuth();
 
   return (
     <BrowserRouter>

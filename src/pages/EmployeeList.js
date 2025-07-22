@@ -16,6 +16,7 @@ import {
   Grid,
   Autocomplete,
   Chip,
+  Tooltip,
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
 import InfoIcon from "@mui/icons-material/Info";
@@ -183,7 +184,7 @@ const EmployeeList = () => {
   };
 
   return (
-    <Paper sx={{ padding: 3, marginTop: 4 }}>
+    <Paper sx={{ padding: 3 }}>
       <Box
         display="flex"
         justifyContent="space-between"
@@ -337,32 +338,40 @@ const EmployeeList = () => {
                     </TableCell>
                     <TableCell>{emp.workLocation}</TableCell>
                     <TableCell>
-                      <IconButton
-                        color="primary"
-                        onClick={() => handleEdit(emp.id)}
-                      >
-                        <Edit />
-                      </IconButton>
-                      <IconButton
-                        color="error"
-                        onClick={() => handleDelete(emp.id)}
-                      >
-                        <Delete />
-                      </IconButton>
-                      <IconButton
-                        color="info"
-                        onClick={() => handleOpenDetails(emp)}
-                      >
-                        <InfoIcon />
-                      </IconButton>
-                      <Button
-                        size="small"
-                        variant="outlined"
-                        sx={{ mt: 1 }}
-                        onClick={() => generateIdCardPDF(emp)}
-                      >
-                        ID Card PDF
-                      </Button>
+                      <Tooltip title="Edit" arrow>
+                        <IconButton
+                          color="primary"
+                          onClick={() => handleEdit(emp.id)}
+                        >
+                          <Edit />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Delete" arrow>
+                        <IconButton
+                          color="error"
+                          onClick={() => handleDelete(emp.id)}
+                        >
+                          <Delete />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="View Details" arrow>
+                        <IconButton
+                          color="info"
+                          onClick={() => handleOpenDetails(emp)}
+                        >
+                          <InfoIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Generate ID Card" arrow>
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          sx={{ mt: 1 }}
+                          onClick={() => generateIdCardPDF(emp)}
+                        >
+                          ID Card PDF
+                        </Button>
+                      </Tooltip>
                     </TableCell>
                   </TableRow>
                 ))}

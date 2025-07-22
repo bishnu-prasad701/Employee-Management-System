@@ -5,11 +5,11 @@ const Header = () => {
   const { logout } = useAuth();
 
   const handleLogout = () => {
-    logout(); // calls the AuthContext logout method which handles redirection and state reset
+    logout();
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="sticky">
       <Toolbar>
         <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
           <Typography variant="h6">
@@ -23,7 +23,7 @@ const Header = () => {
             onClick={handleLogout}
             sx={{
               "&:hover": {
-                backgroundColor: "#b71c1c", // darker red on hover
+                backgroundColor: "#b71c1c",
               },
             }}
           >

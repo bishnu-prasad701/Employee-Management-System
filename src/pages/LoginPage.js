@@ -46,7 +46,7 @@ const LoginPage = () => {
     }
 
     if (email === "admin@gmail.com" && password === "admin123") {
-      login(); // ✅ use AuthContext login method
+      login();
       navigate("/employeeList");
     } else {
       setErrors({ password: "Invalid email or password" });

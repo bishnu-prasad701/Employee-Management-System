@@ -38,16 +38,13 @@ const Sidebar = ({ open, setOpen }) => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       sx={{
-        position: "absolute",
-        left: 0,
-        top: 0,
-        height: "100%",
-        zIndex: 1000,
+        // height: "100vh",
+        mt: "64px",
+        width: open ? 180 : 60,
+        flexShrink: 0,
         "& .MuiDrawer-paper": {
-          position: "absolute",
-          top: 0,
-          left: 0,
-          height: "100%",
+          // height: "100vh",
+          mt: "64px",
           width: open ? 180 : 60,
           boxSizing: "border-box",
           transition: "width 0.3s ease",
