@@ -65,6 +65,16 @@ const EmployeeList = () => {
   const employeeTypes = ["Intern", "Full Time"];
   const statuses = ["Active", "Inactive"];
   const locations = ["BBSR", "Gurgaon"];
+  const clearFilters = () => {
+    setSearch("");
+    setFilters({
+      designation: "",
+      department: "",
+      employeeType: "",
+      status: "",
+      location: "",
+    });
+  };
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -154,49 +164,6 @@ const EmployeeList = () => {
     XLSX.writeFile(workbook, "EmployeeList.xlsx");
   };
 
-  // const generateIdCardPDF = async (emp) => {
-  //   const idCard = document.createElement("div");
-  //   idCard.style.width = "350px";
-  //   idCard.style.height = "200px";
-  //   idCard.style.padding = "16px";
-  //   idCard.style.display = "flex";
-  //   idCard.style.flexDirection = "row";
-  //   idCard.style.alignItems = "center";
-  //   idCard.style.border = "1px solid #ccc";
-  //   idCard.style.borderRadius = "8px";
-  //   idCard.style.background = "#f9f9f9";
-  //   idCard.style.fontFamily = "Arial";
-
-  //   idCard.innerHTML = `
-  //   <div style="flex: 0 0 80px; margin-right: 16px;">
-  //     <img src="${
-  //       emp.profilePreview || ""
-  //     }" alt="Profile" style="width: 80px; height: 80px; border-radius: 50%; border: 1px solid #333;" />
-  //   </div>
-  //   <div style="flex: 1;">
-  //     <div><strong>Name:</strong> ${emp.fullName}</div>
-  //     <div><strong>Emp ID:</strong> ${emp.employeeId}</div>
-  //     <div><strong>Phone:</strong> ${emp.phone}</div>
-  //     <div><strong>Dept:</strong> ${emp.department}</div>
-  //     <div><strong>Location:</strong> ${emp.workLocation}</div>
-  //     <div><strong>Emergency:</strong> ${emp.emergencyContact}</div>
-  //   </div>
-  // `;
-
-  //   document.body.appendChild(idCard);
-  //   const canvas = await html2canvas(idCard);
-  //   const imgData = canvas.toDataURL("image/png");
-
-  //   const pdf = new jsPDF({
-  //     orientation: "landscape",
-  //     unit: "px",
-  //     format: [350, 200],
-  //   });
-
-  //   pdf.addImage(imgData, "PNG", 0, 0, 350, 200);
-  //   pdf.save(`ID_Card_${emp.employeeId || emp.fullName}.pdf`);
-  //   document.body.removeChild(idCard);
-  // };
   const generateIdCardPDF = async (emp) => {
     const idCard = document.createElement("div");
     idCard.style.width = "350px";
@@ -367,6 +334,16 @@ const EmployeeList = () => {
                   <TextField {...params} label="Location" variant="outlined" />
                 )}
               />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+              <Button
+                variant="outlined"
+                color="error"
+                fullWidth
+                onClick={clearFilters}
+              >
+                Clear Filters
+              </Button>
             </Grid>
           </Grid>
         </Grid>

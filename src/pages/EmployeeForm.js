@@ -511,6 +511,13 @@ const EmployeeForm = () => {
         >
           <Button
             variant="outlined"
+            color="secondary"
+            onClick={() => navigate("/employeeList")}
+          >
+            Go to Employeelist
+          </Button>
+          <Button
+            variant="outlined"
             color="error"
             onClick={() => {
               setFormData(initialState);
