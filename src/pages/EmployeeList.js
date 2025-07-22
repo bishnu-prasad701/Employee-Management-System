@@ -227,6 +227,15 @@ const EmployeeList = () => {
         <Box display="flex" gap={2}>
           <Button
             variant="outlined"
+            color="error"
+            fullWidth
+            onClick={clearFilters}
+            sx={{ width: 150 }}
+          >
+            Clear Filters
+          </Button>
+          <Button
+            variant="outlined"
             color="success"
             onClick={handleExportExcel}
           >
@@ -331,16 +340,17 @@ const EmployeeList = () => {
                 )}
               />
             </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            {/* <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <Button
                 variant="outlined"
                 color="error"
                 fullWidth
                 onClick={clearFilters}
+                sx={{ width: 150 }}
               >
                 Clear Filters
               </Button>
-            </Grid>
+            </Grid> */}
           </Grid>
         </Grid>
 
