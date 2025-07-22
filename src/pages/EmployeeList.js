@@ -154,32 +154,77 @@ const EmployeeList = () => {
     XLSX.writeFile(workbook, "EmployeeList.xlsx");
   };
 
+  // const generateIdCardPDF = async (emp) => {
+  //   const idCard = document.createElement("div");
+  //   idCard.style.width = "350px";
+  //   idCard.style.height = "200px";
+  //   idCard.style.padding = "16px";
+  //   idCard.style.display = "flex";
+  //   idCard.style.flexDirection = "row";
+  //   idCard.style.alignItems = "center";
+  //   idCard.style.border = "1px solid #ccc";
+  //   idCard.style.borderRadius = "8px";
+  //   idCard.style.background = "#f9f9f9";
+  //   idCard.style.fontFamily = "Arial";
+
+  //   idCard.innerHTML = `
+  //   <div style="flex: 0 0 80px; margin-right: 16px;">
+  //     <img src="${
+  //       emp.profilePreview || ""
+  //     }" alt="Profile" style="width: 80px; height: 80px; border-radius: 50%; border: 1px solid #333;" />
+  //   </div>
+  //   <div style="flex: 1;">
+  //     <div><strong>Name:</strong> ${emp.fullName}</div>
+  //     <div><strong>Emp ID:</strong> ${emp.employeeId}</div>
+  //     <div><strong>Phone:</strong> ${emp.phone}</div>
+  //     <div><strong>Dept:</strong> ${emp.department}</div>
+  //     <div><strong>Location:</strong> ${emp.workLocation}</div>
+  //     <div><strong>Emergency:</strong> ${emp.emergencyContact}</div>
+  //   </div>
+  // `;
+
+  //   document.body.appendChild(idCard);
+  //   const canvas = await html2canvas(idCard);
+  //   const imgData = canvas.toDataURL("image/png");
+
+  //   const pdf = new jsPDF({
+  //     orientation: "landscape",
+  //     unit: "px",
+  //     format: [350, 200],
+  //   });
+
+  //   pdf.addImage(imgData, "PNG", 0, 0, 350, 200);
+  //   pdf.save(`ID_Card_${emp.employeeId || emp.fullName}.pdf`);
+  //   document.body.removeChild(idCard);
+  // };
   const generateIdCardPDF = async (emp) => {
     const idCard = document.createElement("div");
     idCard.style.width = "350px";
     idCard.style.height = "200px";
     idCard.style.padding = "16px";
     idCard.style.display = "flex";
-    idCard.style.flexDirection = "row";
-    idCard.style.alignItems = "center";
-    idCard.style.border = "1px solid #ccc";
-    idCard.style.borderRadius = "8px";
-    idCard.style.background = "#f9f9f9";
+    idCard.style.flexDirection = "column"; // vertical layout for heading + content
+    idCard.style.border = "1px solid black";
+    idCard.style.borderRadius = "10px";
+    idCard.style.background = "white";
     idCard.style.fontFamily = "Arial";
 
     idCard.innerHTML = `
-    <div style="flex: 0 0 80px; margin-right: 16px;">
-      <img src="${
-        emp.profilePreview || ""
-      }" alt="Profile" style="width: 80px; height: 80px; border-radius: 50%; border: 1px solid #333;" />
-    </div>
-    <div style="flex: 1;">
-      <div><strong>Name:</strong> ${emp.fullName}</div>
-      <div><strong>Emp ID:</strong> ${emp.employeeId}</div>
-      <div><strong>Phone:</strong> ${emp.phone}</div>
-      <div><strong>Dept:</strong> ${emp.department}</div>
-      <div><strong>Location:</strong> ${emp.workLocation}</div>
-      <div><strong>Emergency:</strong> ${emp.emergencyContact}</div>
+    <h3 style="margin: 0 0 12px 0; text-align: center;">Employee ID Card</h3>
+    <div style="display: flex; flex-grow: 1; gap: 16px;">
+      <div style="flex: 0 0 100px;">
+        <img src="${
+          emp.profilePreview || ""
+        }" alt="Profile" style="width: 100px; height: 120px; border-radius: 8px; border: 1px solid black; object-fit: cover;" />
+      </div>
+      <div style="flex: 1; fontSize: 14px; lineHeight: 1.4;">
+        <div><strong>Name:</strong> ${emp.fullName}</div>
+        <div><strong>Emp ID:</strong> ${emp.employeeId}</div>
+        <div><strong>Phone:</strong> ${emp.phone}</div>
+        <div><strong>Dept:</strong> ${emp.department}</div>
+        <div><strong>Location:</strong> ${emp.workLocation}</div>
+        <div><strong>Emergency:</strong> ${emp.emergencyContact}</div>
+      </div>
     </div>
   `;
 
@@ -187,13 +232,22 @@ const EmployeeList = () => {
     const canvas = await html2canvas(idCard);
     const imgData = canvas.toDataURL("image/png");
 
+    const pdfWidth = 500;
+    const pdfHeight = 300;
+    const cardWidth = 350;
+    const cardHeight = 200;
+
     const pdf = new jsPDF({
       orientation: "landscape",
       unit: "px",
-      format: [350, 200],
+      format: [pdfWidth, pdfHeight],
     });
 
-    pdf.addImage(imgData, "PNG", 0, 0, 350, 200);
+    // Center the card in the PDF page
+    const x = (pdfWidth - cardWidth) / 2;
+    const y = (pdfHeight - cardHeight) / 2;
+
+    pdf.addImage(imgData, "PNG", x, y, cardWidth, cardHeight);
     pdf.save(`ID_Card_${emp.employeeId || emp.fullName}.pdf`);
     document.body.removeChild(idCard);
   };
@@ -335,6 +389,9 @@ const EmployeeList = () => {
                         <TableCell sx={{ color: "#fff" }}>Sl No.</TableCell>
                         <TableCell sx={{ color: "#fff" }}>Profile</TableCell>
                         <TableCell sx={{ color: "#fff" }}>Full Name</TableCell>
+                        <TableCell sx={{ color: "#fff" }}>
+                          Employee ID
+                        </TableCell>
                         <TableCell sx={{ color: "#fff" }}>Email</TableCell>
                         <TableCell sx={{ color: "#fff" }}>Phone</TableCell>
                         <TableCell sx={{ color: "#fff" }}>Department</TableCell>
@@ -369,6 +426,7 @@ const EmployeeList = () => {
                               </Avatar>
                             </TableCell>
                             <TableCell>{emp.fullName}</TableCell>
+                            <TableCell>{emp.employeeId}</TableCell>
                             <TableCell>{emp.email}</TableCell>
                             <TableCell>{emp.phone}</TableCell>
                             <TableCell>{emp.department}</TableCell>
