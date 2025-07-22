@@ -156,6 +156,7 @@ const EmployeeForm = () => {
       ) {
         errors.email = "Enter a valid email with @ and .";
       }
+
       // Phone validation (10-digit Indian number)
       const phoneRegex = /^[6-9]\d{9}$/;
       if (!phoneRegex.test(formData.phone || "")) {
@@ -173,6 +174,7 @@ const EmployeeForm = () => {
       if (formData.joiningDate && formData.joiningDate > today) {
         errors.joiningDate = "Joining date cannot be in the future";
       }
+
       return errors;
     };
 
@@ -181,6 +183,21 @@ const EmployeeForm = () => {
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
       return;
+    }
+
+    // 🔍 Check for duplicate Employee ID if adding new
+    if (!employeeId) {
+      const isDuplicateId = employees.some(
+        (emp) =>
+          String(emp.employeeId).trim() === String(formData.employeeId).trim()
+      );
+      if (isDuplicateId) {
+        setFormErrors((prev) => ({
+          ...prev,
+          employeeId: "Employee ID already exists",
+        }));
+        return;
+      }
     }
 
     try {
@@ -297,7 +314,7 @@ const EmployeeForm = () => {
                 </Box>
                 {formData.profilePicture && !formErrors.profilePicture && (
                   <FormHelperText sx={{ color: "green" }}>
-                    Picture uploaded
+                    Profile Picture is present
                   </FormHelperText>
                 )}
                 {formErrors.profilePicture && (

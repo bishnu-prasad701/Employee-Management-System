@@ -130,9 +130,24 @@ const EmployeeList = () => {
   };
 
   const handleExportExcel = () => {
-    const exportData = filteredEmployees.map(
-      ({ id, profilePreview, ...emp }) => emp
-    );
+    const exportData = filteredEmployees.map((emp) => ({
+      FullName: emp.fullName,
+      EmployeeID: emp.employeeId,
+      Email: emp.email,
+      Phone: emp.phone,
+      Designation: emp.designation,
+      Department: emp.department,
+      JoiningDate: emp.joiningDate,
+      EmployeeType: emp.employeeType,
+      WorkLocation: emp.workLocation,
+      ProfilePicture: emp.profilePreview ? "Uploaded" : "Not Uploaded",
+      Status: emp.status ? "Active" : "Inactive",
+      IsAdmin: emp.isAdmin ? "Yes" : "No",
+      ManagerID: emp.managerId,
+      Skills: emp.skills,
+      DateOfBirth: emp.dateOfBirth,
+      EmergencyContact: emp.emergencyContact,
+    }));
     const worksheet = XLSX.utils.json_to_sheet(exportData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Employees");

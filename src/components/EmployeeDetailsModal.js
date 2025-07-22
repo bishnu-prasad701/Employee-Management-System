@@ -56,7 +56,7 @@ const EmployeeDetailsModal = ({ open, onClose, employee }) => {
                   label="Emergency Contact"
                   value={employee.emergencyContact}
                 />
-                <InfoItem label="Date of Birth" value={employee.dob} />
+                <InfoItem label="Date of Birth" value={employee.dateOfBirth} />
               </CardContent>
             </Card>
 

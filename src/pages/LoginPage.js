@@ -45,11 +45,13 @@ const LoginPage = () => {
       return;
     }
 
-    if (email === "admin@gmail.com" && password === "admin123") {
+    if (email !== "admin@gmail.com") {
+      setErrors({ email: "Email not found" });
+    } else if (password !== "admin123") {
+      setErrors({ password: "Incorrect password" });
+    } else {
       login();
       navigate("/employeeList");
-    } else {
-      setErrors({ password: "Invalid email or password" });
     }
   };
 
