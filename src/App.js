@@ -9,7 +9,6 @@ import Sidebar from "./commonComponents/Sidebar";
 import { Box } from "@mui/material";
 import { useAuth } from "./context/AuthContext";
 
-// Wrapper to include header & sidebar only if logged in
 const LayoutWrapper = ({ children }) => {
   const { isLoggedIn } = useAuth();
   const [open, setOpen] = useState(false);

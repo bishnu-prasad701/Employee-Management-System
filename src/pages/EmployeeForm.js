@@ -57,7 +57,7 @@ const EmployeeForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { id } = useParams();
-  const employeeId = id || null; // keep string id
+  const employeeId = id || null;
   const employees = useSelector((state) => state.employees.list);
   const existingEmployee = employees.find((emp) => emp.id === employeeId);
   const [addEmployeeApi] = useAddEmployeeMutation();
@@ -79,7 +79,6 @@ const EmployeeForm = () => {
       const newDesignations = designationOptions[key] || [];
       setDesignations(newDesignations);
 
-      // Clear designation if it's no longer valid
       if (!newDesignations.includes(formData.designation)) {
         setFormData((prev) => ({
           ...prev,
@@ -106,11 +105,10 @@ const EmployeeForm = () => {
       setFormData((prev) => ({
         ...prev,
         department: value,
-        designation: "", // reset designation
+        designation: "",
       }));
       setDesignations(designationOptions[value] || []);
     } else if (name === "phone" || name === "emergencyContact") {
-      // Restrict to digits only and max 10 characters
       const numericValue = value.replace(/\D/g, "").slice(0, 10);
       setFormData((prev) => ({
         ...prev,
@@ -131,7 +129,6 @@ const EmployeeForm = () => {
       const errors = {};
 
       for (const field in formData) {
-        // Skip profilePicture here to handle it separately
         if (
           field !== "profilePicture" &&
           (formData[field] === "" ||
@@ -142,22 +139,17 @@ const EmployeeForm = () => {
         }
       }
 
-      // Require profilePicture only if adding a new employee (no employeeId)
       if (!employeeId) {
         if (!formData.profilePicture) {
           errors.profilePicture = "This field is required";
         }
       }
-
-      // Email validation
       if (
         formData.email &&
         !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
       ) {
         errors.email = "Enter a valid email with @ and .";
       }
-
-      // Phone validation (10-digit Indian number)
       const phoneRegex = /^[6-9]\d{9}$/;
       if (!phoneRegex.test(formData.phone || "")) {
         errors.phone = "Enter a valid 10-digit Indian number";
@@ -165,8 +157,6 @@ const EmployeeForm = () => {
       if (!phoneRegex.test(formData.emergencyContact || "")) {
         errors.emergencyContact = "Enter a valid 10-digit Indian number";
       }
-
-      // Date validation
       const today = new Date().toISOString().split("T")[0];
       if (formData.dateOfBirth && formData.dateOfBirth > today) {
         errors.dateOfBirth = "Date of birth cannot be in the future";
@@ -178,14 +168,12 @@ const EmployeeForm = () => {
       return errors;
     };
 
-    // Run validation
     const errors = validateForm(formData);
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
       return;
     }
 
-    // 🔍 Check for duplicate Employee ID if adding new
     if (!employeeId) {
       const isDuplicateId = employees.some(
         (emp) =>

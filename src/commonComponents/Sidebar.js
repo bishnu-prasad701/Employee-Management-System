@@ -61,7 +61,7 @@ const Sidebar = ({ open, setOpen }) => {
                 justifyContent: open ? "initial" : "center",
                 px: 2.5,
                 "&:hover": {
-                  backgroundColor: "#FFD580", // Hover color
+                  backgroundColor: "#FFD580",
                 },
               }}
             >

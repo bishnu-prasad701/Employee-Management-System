@@ -43,7 +43,6 @@ const EmployeeList = () => {
   const [deleteEmployeeApi] = useDeleteEmployeeMutation();
   const employees = useSelector((state) => state.employees.list);
 
-  // Filters
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState({
     designation: "",
@@ -53,7 +52,6 @@ const EmployeeList = () => {
     location: "",
   });
 
-  // Static dropdown options (optional: can be extracted from `employees`)
   const departments = ["IT", "Tech", "HR"];
   const designations = [
     "IT Admin",
@@ -111,7 +109,6 @@ const EmployeeList = () => {
   };
 
   const filteredEmployees = employees.filter((emp) => {
-    // Convert filters.status string to boolean only if status filter is set
     let statusBool = filters.status === "Active" ? true : false;
 
     return (
@@ -170,7 +167,7 @@ const EmployeeList = () => {
     idCard.style.height = "200px";
     idCard.style.padding = "16px";
     idCard.style.display = "flex";
-    idCard.style.flexDirection = "column"; // vertical layout for heading + content
+    idCard.style.flexDirection = "column";
     idCard.style.border = "1px solid black";
     idCard.style.borderRadius = "10px";
     idCard.style.background = "white";
@@ -210,7 +207,6 @@ const EmployeeList = () => {
       format: [pdfWidth, pdfHeight],
     });
 
-    // Center the card in the PDF page
     const x = (pdfWidth - cardWidth) / 2;
     const y = (pdfHeight - cardHeight) / 2;
 
