@@ -184,7 +184,7 @@ const EmployeeList = () => {
   };
 
   return (
-    <Paper sx={{ padding: 3 }}>
+    <Paper sx={{ p: 2, m: 1 }}>
       <Box
         display="flex"
         justifyContent="space-between"
@@ -313,94 +313,101 @@ const EmployeeList = () => {
           ) : (
             <>
               <TableContainer component={Paper}>
-                <Table>
-                  <TableHead>
-                    <TableRow sx={{ backgroundColor: "#1976d2" }}>
-                      <TableCell sx={{ color: "#fff" }}>Sl No.</TableCell>
-                      <TableCell sx={{ color: "#fff" }}>Profile</TableCell>
-                      <TableCell sx={{ color: "#fff" }}>Full Name</TableCell>
-                      <TableCell sx={{ color: "#fff" }}>Email</TableCell>
-                      <TableCell sx={{ color: "#fff" }}>Phone</TableCell>
-                      <TableCell sx={{ color: "#fff" }}>Department</TableCell>
-                      <TableCell sx={{ color: "#fff" }}>Designation</TableCell>
-                      <TableCell sx={{ color: "#fff" }}>
-                        Employee Type
-                      </TableCell>
-                      <TableCell sx={{ color: "#fff" }}>Status</TableCell>
-                      <TableCell sx={{ color: "#fff" }}>Location</TableCell>
-                      <TableCell sx={{ color: "#fff" }}>Actions</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {filteredEmployees
-                      .slice(
-                        page * rowsPerPage,
-                        page * rowsPerPage + rowsPerPage
-                      )
-                      .map((emp, index) => (
-                        <TableRow key={emp.id}>
-                          <TableCell>
-                            {page * rowsPerPage + index + 1}
-                          </TableCell>
-                          <TableCell>
-                            <Avatar src={emp.profilePreview} alt={emp.fullName}>
-                              {!emp.profilePreview && emp.fullName?.[0]}
-                            </Avatar>
-                          </TableCell>
-                          <TableCell>{emp.fullName}</TableCell>
-                          <TableCell>{emp.email}</TableCell>
-                          <TableCell>{emp.phone}</TableCell>
-                          <TableCell>{emp.department}</TableCell>
-                          <TableCell>{emp.designation}</TableCell>
-                          <TableCell>{emp.employeeType}</TableCell>
-                          <TableCell>
-                            <Chip
-                              label={emp.status ? "Active" : "Inactive"}
-                              color={emp.status ? "success" : "default"}
-                              size="small"
-                            />
-                          </TableCell>
-                          <TableCell>{emp.workLocation}</TableCell>
-                          <TableCell>
-                            <Tooltip title="Edit" arrow>
-                              <IconButton
-                                color="primary"
-                                onClick={() => handleEdit(emp.id)}
+                <Box sx={{ overflowX: "auto" }}>
+                  <Table>
+                    <TableHead>
+                      <TableRow sx={{ backgroundColor: "#1976d2" }}>
+                        <TableCell sx={{ color: "#fff" }}>Sl No.</TableCell>
+                        <TableCell sx={{ color: "#fff" }}>Profile</TableCell>
+                        <TableCell sx={{ color: "#fff" }}>Full Name</TableCell>
+                        <TableCell sx={{ color: "#fff" }}>Email</TableCell>
+                        <TableCell sx={{ color: "#fff" }}>Phone</TableCell>
+                        <TableCell sx={{ color: "#fff" }}>Department</TableCell>
+                        <TableCell sx={{ color: "#fff" }}>
+                          Designation
+                        </TableCell>
+                        <TableCell sx={{ color: "#fff" }}>
+                          Employee Type
+                        </TableCell>
+                        <TableCell sx={{ color: "#fff" }}>Status</TableCell>
+                        <TableCell sx={{ color: "#fff" }}>Location</TableCell>
+                        <TableCell sx={{ color: "#fff" }}>Actions</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {filteredEmployees
+                        .slice(
+                          page * rowsPerPage,
+                          page * rowsPerPage + rowsPerPage
+                        )
+                        .map((emp, index) => (
+                          <TableRow key={emp.id}>
+                            <TableCell>
+                              {page * rowsPerPage + index + 1}
+                            </TableCell>
+                            <TableCell>
+                              <Avatar
+                                src={emp.profilePreview}
+                                alt={emp.fullName}
                               >
-                                <Edit />
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip title="Delete" arrow>
-                              <IconButton
-                                color="error"
-                                onClick={() => handleDelete(emp.id)}
-                              >
-                                <Delete />
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip title="View Details" arrow>
-                              <IconButton
-                                color="info"
-                                onClick={() => handleOpenDetails(emp)}
-                              >
-                                <InfoIcon />
-                              </IconButton>
-                            </Tooltip>
-                            <Tooltip title="Generate ID Card" arrow>
-                              <Button
+                                {!emp.profilePreview && emp.fullName?.[0]}
+                              </Avatar>
+                            </TableCell>
+                            <TableCell>{emp.fullName}</TableCell>
+                            <TableCell>{emp.email}</TableCell>
+                            <TableCell>{emp.phone}</TableCell>
+                            <TableCell>{emp.department}</TableCell>
+                            <TableCell>{emp.designation}</TableCell>
+                            <TableCell>{emp.employeeType}</TableCell>
+                            <TableCell>
+                              <Chip
+                                label={emp.status ? "Active" : "Inactive"}
+                                color={emp.status ? "success" : "default"}
                                 size="small"
-                                variant="outlined"
-                                sx={{ mt: 1 }}
-                                onClick={() => generateIdCardPDF(emp)}
-                              >
-                                ID Card PDF
-                              </Button>
-                            </Tooltip>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                  </TableBody>
-                </Table>
+                              />
+                            </TableCell>
+                            <TableCell>{emp.workLocation}</TableCell>
+                            <TableCell>
+                              <Tooltip title="Edit" arrow>
+                                <IconButton
+                                  color="primary"
+                                  onClick={() => handleEdit(emp.id)}
+                                >
+                                  <Edit />
+                                </IconButton>
+                              </Tooltip>
+                              <Tooltip title="Delete" arrow>
+                                <IconButton
+                                  color="error"
+                                  onClick={() => handleDelete(emp.id)}
+                                >
+                                  <Delete />
+                                </IconButton>
+                              </Tooltip>
+                              <Tooltip title="View Details" arrow>
+                                <IconButton
+                                  color="info"
+                                  onClick={() => handleOpenDetails(emp)}
+                                >
+                                  <InfoIcon />
+                                </IconButton>
+                              </Tooltip>
+                              <Tooltip title="Generate ID Card" arrow>
+                                <Button
+                                  size="small"
+                                  variant="outlined"
+                                  sx={{ mt: 1 }}
+                                  onClick={() => generateIdCardPDF(emp)}
+                                >
+                                  ID Card PDF
+                                </Button>
+                              </Tooltip>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </Box>
               </TableContainer>
               <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}

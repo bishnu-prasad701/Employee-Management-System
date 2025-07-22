@@ -7,13 +7,12 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import PeopleIcon from "@mui/icons-material/People";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 
 const Sidebar = ({ open, setOpen }) => {
   const navigate = useNavigate();
-  const location = useLocation();
 
   const handleMouseEnter = () => setOpen(true);
   const handleMouseLeave = () => setOpen(false);

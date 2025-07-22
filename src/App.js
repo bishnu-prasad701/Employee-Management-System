@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  useLocation,
-  Navigate,
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import EmployeeList from "./pages/EmployeeList";
 import EmployeeForm from "./pages/EmployeeForm";
@@ -32,10 +26,12 @@ const LayoutWrapper = ({ children }) => {
         <Box
           component="main"
           sx={{
-            flexGrow: 1,
-            mt: 3,
-            ml: `${open ? 20 : 20}px`,
+            // flexGrow: 1,
+            // mt: "64px",
+            // ml: `${open ? 180 : 60}px`,
             transition: "margin-left 0.3s ease",
+            width: open ? "calc(100vw - 180px)" : "calc(100vw - 60px)",
+            overflowX: "auto",
           }}
         >
           {children}

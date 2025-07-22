@@ -3,9 +3,7 @@ import {
   TextField,
   Button,
   Grid,
-  Paper,
   Typography,
-  MenuItem,
   Switch,
   FormControlLabel,
   FormControl,
@@ -213,7 +211,7 @@ const EmployeeForm = () => {
   };
 
   return (
-    <Box sx={{ p: 1, mt: 1, mr: 2, borderRadius: 2, boxShadow: 3 }}>
+    <Box sx={{ p: 2, m: 1, borderRadius: 2, boxShadow: 3 }}>
       <Typography variant="h5" gutterBottom>
         {employeeId ? "Update Employee" : "Add Employee"}
       </Typography>
