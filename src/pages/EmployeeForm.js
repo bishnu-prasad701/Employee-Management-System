@@ -91,34 +91,49 @@ const EmployeeForm = () => {
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
 
+    let updatedValue;
+
     if (name === "profilePicture") {
+      updatedValue = files[0];
       setFormData((prev) => ({
         ...prev,
-        profilePicture: files[0],
+        profilePicture: updatedValue,
       }));
     } else if (name === "status") {
+      updatedValue = checked;
       setFormData((prev) => ({
         ...prev,
-        status: checked,
+        status: updatedValue,
       }));
     } else if (name === "department") {
+      updatedValue = value;
       setFormData((prev) => ({
         ...prev,
-        department: value,
+        department: updatedValue,
         designation: "",
       }));
       setDesignations(designationOptions[value] || []);
     } else if (name === "phone" || name === "emergencyContact") {
-      const numericValue = value.replace(/\D/g, "").slice(0, 10);
+      updatedValue = value.replace(/\D/g, "").slice(0, 10);
       setFormData((prev) => ({
         ...prev,
-        [name]: numericValue,
+        [name]: updatedValue,
       }));
     } else {
+      updatedValue = type === "checkbox" ? checked : value;
       setFormData((prev) => ({
         ...prev,
-        [name]: type === "checkbox" ? checked : value,
+        [name]: updatedValue,
       }));
+    }
+
+    // Clear the error for the current field if it exists
+    if (formErrors[name]) {
+      setFormErrors((prevErrors) => {
+        const updatedErrors = { ...prevErrors };
+        delete updatedErrors[name];
+        return updatedErrors;
+      });
     }
   };
 
@@ -336,9 +351,22 @@ const EmployeeForm = () => {
                 fullWidth
                 options={["IT", "Tech", "HR"]}
                 value={formData.department || null}
-                onChange={(e, newValue) =>
-                  setFormData({ ...formData, department: newValue })
-                }
+                onChange={(e, newValue) => {
+                  setFormData((prev) => ({
+                    ...prev,
+                    department: newValue,
+                    designation: "",
+                  }));
+                  setDesignations(designationOptions[newValue] || []);
+
+                  if (formErrors.department) {
+                    setFormErrors((prev) => {
+                      const updated = { ...prev };
+                      delete updated.department;
+                      return updated;
+                    });
+                  }
+                }}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -349,15 +377,25 @@ const EmployeeForm = () => {
                 )}
               />
             </Grid>
-
             <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <Autocomplete
                 fullWidth
                 options={formData.department ? designations : []}
                 value={formData.designation || null}
-                onChange={(e, newValue) =>
-                  setFormData({ ...formData, designation: newValue })
-                }
+                onChange={(e, newValue) => {
+                  setFormData((prev) => ({
+                    ...prev,
+                    designation: newValue,
+                  }));
+
+                  if (formErrors.designation) {
+                    setFormErrors((prev) => {
+                      const updated = { ...prev };
+                      delete updated.designation;
+                      return updated;
+                    });
+                  }
+                }}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -375,9 +413,20 @@ const EmployeeForm = () => {
                 fullWidth
                 options={["Intern", "Full Time"]}
                 value={formData.employeeType || null}
-                onChange={(e, newValue) =>
-                  setFormData({ ...formData, employeeType: newValue })
-                }
+                onChange={(e, newValue) => {
+                  setFormData((prev) => ({
+                    ...prev,
+                    employeeType: newValue,
+                  }));
+
+                  if (formErrors.employeeType) {
+                    setFormErrors((prev) => {
+                      const updated = { ...prev };
+                      delete updated.employeeType;
+                      return updated;
+                    });
+                  }
+                }}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -388,15 +437,25 @@ const EmployeeForm = () => {
                 )}
               />
             </Grid>
-
             <Grid size={{ xs: 12, sm: 6, md: 3 }}>
               <Autocomplete
                 fullWidth
                 options={["BBSR", "Gurgaon"]}
                 value={formData.workLocation || null}
-                onChange={(e, newValue) =>
-                  setFormData({ ...formData, workLocation: newValue })
-                }
+                onChange={(e, newValue) => {
+                  setFormData((prev) => ({
+                    ...prev,
+                    workLocation: newValue,
+                  }));
+
+                  if (formErrors.workLocation) {
+                    setFormErrors((prev) => {
+                      const updated = { ...prev };
+                      delete updated.workLocation;
+                      return updated;
+                    });
+                  }
+                }}
                 renderInput={(params) => (
                   <TextField
                     {...params}
