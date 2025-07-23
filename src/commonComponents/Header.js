@@ -9,10 +9,17 @@ const Header = () => {
   };
 
   return (
-    <AppBar position="sticky">
+    <AppBar
+      position="sticky"
+      elevation={1}
+      sx={{
+        backgroundColor: "#E8EDF2",
+        color: "#0D141C",
+      }}
+    >
       <Toolbar>
         <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
-          <Typography variant="h6">
+          <Typography variant="h6" sx={{ color: "#0D141C" }}>
             <strong>Employee Management System</strong>
           </Typography>
         </Box>
@@ -22,8 +29,10 @@ const Header = () => {
             color="error"
             onClick={handleLogout}
             sx={{
+              color: "#0D141C",
+              backgroundColor: "rgba(247, 244, 244, 1)",
               "&:hover": {
-                backgroundColor: "#b71c1c",
+                backgroundColor: "rgba(255, 0,0, 0.05)",
               },
             }}
           >

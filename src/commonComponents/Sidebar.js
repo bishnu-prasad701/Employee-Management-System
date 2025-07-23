@@ -22,11 +22,13 @@ const Sidebar = ({ open, setOpen }) => {
       label: "Employee List",
       icon: <PeopleIcon />,
       path: "/employeeList",
+      color: "#0D141C",
     },
     {
       label: "Add Employee",
       icon: <PersonAddIcon />,
       path: "/employeeform/add",
+      color: "#0D141C",
     },
   ];
 
@@ -47,13 +49,15 @@ const Sidebar = ({ open, setOpen }) => {
           width: open ? 180 : 60,
           boxSizing: "border-box",
           transition: "width 0.3s ease",
-          backgroundColor: "#FF9F40",
+          // backgroundColor: "#FF9F40",
+          backgroundColor: "#E8EDF2",
+
           color: "#fff",
         },
       }}
     >
       <List>
-        {navItems.map(({ label, icon, path }) => (
+        {navItems.map(({ label, icon, path, color }) => (
           <ListItem key={label} disablePadding>
             <ListItemButton
               onClick={() => navigate(path)}
@@ -61,7 +65,8 @@ const Sidebar = ({ open, setOpen }) => {
                 justifyContent: open ? "initial" : "center",
                 px: 2.5,
                 "&:hover": {
-                  backgroundColor: "#FFD580",
+                  // backgroundColor: "#FFD580",
+                  backgroundColor: "#F7FAFC",
                 },
               }}
             >
@@ -70,12 +75,17 @@ const Sidebar = ({ open, setOpen }) => {
                   minWidth: 0,
                   mr: open ? 2 : "auto",
                   justifyContent: "center",
-                  color: "#fff",
+                  color: "#0D141C",
                 }}
               >
                 {icon}
               </ListItemIcon>
-              {open && <ListItemText primary={label} />}
+              {open && (
+                <ListItemText
+                  primary={label}
+                  primaryTypographyProps={{ sx: { color } }}
+                />
+              )}
             </ListItemButton>
           </ListItem>
         ))}
