@@ -52,11 +52,15 @@ const EmployeeDetailsModal = ({ open, onClose, employee }) => {
                 </Box>
                 <InfoItem label="Email" value={employee.email} />
                 <InfoItem label="Phone" value={employee.phone} />
+                <InfoItem label="Date of Birth" value={employee.dateOfBirth} />
                 <InfoItem
                   label="Emergency Contact"
                   value={employee.emergencyContact}
                 />
-                <InfoItem label="Date of Birth" value={employee.dateOfBirth} />
+                <InfoItem
+                  label="Emergency Contact Name"
+                  value={employee.emergencyContactName}
+                />
               </CardContent>
             </Card>
 

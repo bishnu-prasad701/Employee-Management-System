@@ -43,6 +43,7 @@ const initialState = {
   skills: "",
   dateOfBirth: "",
   emergencyContact: "",
+  emergencyContactName: "",
 };
 
 const designationOptions = {
@@ -250,7 +251,14 @@ const EmployeeForm = () => {
                   { label: "Email Address", name: "email", type: "email" },
                   { label: "Phone Number", name: "phone" },
                   { label: "Date of Birth", name: "dateOfBirth", type: "date" },
-                  { label: "Emergency Contact", name: "emergencyContact" },
+                  {
+                    label: "Emergency Contact Name",
+                    name: "emergencyContactName",
+                  },
+                  {
+                    label: "Emergency Contact Number",
+                    name: "emergencyContact",
+                  },
                 ].map((field) => (
                   <Grid size={{ xs: 12, sm: 6 }} key={field.name}>
                     <TextField
@@ -292,7 +300,15 @@ const EmployeeForm = () => {
                     src={formData.profilePreview}
                     sx={{ width: 100, height: 100, mb: 2 }}
                   />
-                  <Button variant="outlined" component="label">
+                  <Button
+                    variant="contained"
+                    component="label"
+                    sx={{
+                      backgroundColor: "#E8EDF2",
+                      color: "#000",
+                      textTransform: "none",
+                    }}
+                  >
                     Upload Picture
                     <input
                       hidden
@@ -557,24 +573,40 @@ const EmployeeForm = () => {
           sx={{ display: "flex", justifyContent: "flex-end", gap: 2, mt: 3 }}
         >
           <Button
-            variant="outlined"
-            color="secondary"
+            variant="contained"
             onClick={() => navigate("/employeeList")}
+            sx={{
+              backgroundColor: "#E8EDF2",
+              color: "#000",
+              textTransform: "none",
+            }}
           >
-            Go to Employeelist
+            Cancel
           </Button>
           <Button
-            variant="outlined"
-            color="error"
+            variant="contained"
             onClick={() => {
               setFormData(initialState);
               setDesignations([]);
+            }}
+            sx={{
+              backgroundColor: "#E8EDF2",
+              color: "#000",
+              textTransform: "none",
             }}
           >
             Clear Form
           </Button>
 
-          <Button type="submit" variant="contained" color="primary">
+          <Button
+            type="submit"
+            variant="contained"
+            sx={{
+              backgroundColor: "#E8EDF2",
+              color: "#000",
+              textTransform: "none",
+            }}
+          >
             {employeeId ? "Update Employee" : "Add Employee"}
           </Button>
         </Box>

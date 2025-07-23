@@ -424,11 +424,13 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
-import { IconButton, Tooltip } from "@mui/material";
+import { IconButton, Tooltip, InputAdornment } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
 import InfoIcon from "@mui/icons-material/Info";
 import ExportButtons from "../components/ExportButtons";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import FeaturedVideoIcon from "@mui/icons-material/FeaturedVideo";
+import ClearIcon from "@mui/icons-material/Clear";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -616,6 +618,19 @@ const EmployeeListPage = () => {
             backgroundColor: surfaceColor,
             borderRadius: 1,
           }}
+          InputProps={{
+            endAdornment: search && (
+              <InputAdornment position="end">
+                <IconButton
+                  size="small"
+                  onClick={() => setSearch("")}
+                  edge="end"
+                >
+                  <ClearIcon fontSize="small" />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         />
 
         {/* Filter Dropdowns */}
@@ -709,9 +724,25 @@ const EmployeeListPage = () => {
                         <TableCell>{emp.designation}</TableCell>
                         <TableCell>{emp.employeeType}</TableCell>
                         <TableCell>
-                          <Chip
+                          {/* <Chip
                             label={emp.status ? "Active" : "Inactive"}
                             color={emp.status ? "success" : "error"}
+                            size="small"
+                            sx={{ opacity: 0.6 }}
+                          /> */}
+                          <Chip
+                            label={emp.status ? "Active" : "Inactive"}
+                            sx={{
+                              backgroundColor: emp.status
+                                ? "#c8f7c5"
+                                : "#f9c0c0", // Light green / red
+                              color: "#000",
+                              width: 80,
+                              textAlign: "center",
+                              fontWeight: 500,
+                              fontSize: "0.75rem",
+                              borderRadius: "8px",
+                            }}
                             size="small"
                           />
                         </TableCell>
@@ -721,6 +752,11 @@ const EmployeeListPage = () => {
                             <IconButton
                               color="primary"
                               onClick={() => handleEdit(emp.id)}
+                              sx={{
+                                color: "#000",
+                                textTransform: "none",
+                                opacity: 0.5,
+                              }}
                             >
                               <Edit />
                             </IconButton>
@@ -729,6 +765,11 @@ const EmployeeListPage = () => {
                             <IconButton
                               color="error"
                               onClick={() => handleDelete(emp.id)}
+                              sx={{
+                                color: "#000",
+                                textTransform: "none",
+                                opacity: 0.5,
+                              }}
                             >
                               <Delete />
                             </IconButton>
@@ -737,19 +778,29 @@ const EmployeeListPage = () => {
                             <IconButton
                               color="info"
                               onClick={() => handleOpenDetails(emp)}
+                              sx={{
+                                color: "#000",
+                                textTransform: "none",
+                                opacity: 0.5,
+                              }}
                             >
                               <InfoIcon />
                             </IconButton>
                           </Tooltip>
                           <Tooltip title="Generate ID Card" arrow>
-                            <Button
-                              size="small"
-                              variant="outlined"
-                              sx={{ mt: 1 }}
+                            <IconButton
+                              color="info"
                               onClick={() => generateIdCardPDF(emp)}
+                              sx={{
+                                color: "#000",
+                                textTransform: "none",
+                                opacity: 0.5,
+                              }}
                             >
-                              ID Card PDF
-                            </Button>
+                              <FeaturedVideoIcon
+                                style={{ width: 24, height: 24 }}
+                              />
+                            </IconButton>
                           </Tooltip>
                         </TableCell>
                       </TableRow>

@@ -24,6 +24,7 @@ const ExportButtons = () => {
       Skills: emp.skills,
       DateOfBirth: emp.dateOfBirth,
       EmergencyContact: emp.emergencyContact,
+      EmergencyContactName: emp.emergencyContactName,
     }));
     const worksheet = XLSX.utils.json_to_sheet(exportData);
     const workbook = XLSX.utils.book_new();
