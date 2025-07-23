@@ -128,7 +128,6 @@ const EmployeeForm = () => {
       }));
     }
 
-    // Clear the error for the current field if it exists
     if (formErrors[name]) {
       setFormErrors((prevErrors) => {
         const updatedErrors = { ...prevErrors };

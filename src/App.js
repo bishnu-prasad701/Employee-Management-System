@@ -25,9 +25,6 @@ const LayoutWrapper = ({ children }) => {
         <Box
           component="main"
           sx={{
-            // flexGrow: 1,
-            // mt: "64px",
-            // ml: `${open ? 180 : 60}px`,
             transition: "margin-left 0.3s ease",
             width: open ? "calc(100vw - 180px)" : "calc(100vw - 60px)",
             overflowX: "auto",
@@ -77,7 +74,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-          {/* Catch all unknown paths */}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </LayoutWrapper>
