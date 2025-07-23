@@ -552,7 +552,7 @@ const EmployeeListPage = () => {
   };
 
   return (
-    <Box p={4} sx={{ minHeight: "100vh" }}>
+    <Box p={4} sx={{ minHeight: "calc(100vh - 128px)" }}>
       {/* Header Row */}
       <Box
         display="flex"

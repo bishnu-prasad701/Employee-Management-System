@@ -232,58 +232,33 @@ const EmployeeForm = () => {
   };
 
   return (
-    <Box sx={{ p: 2, m: 1, borderRadius: 2, boxShadow: 3 }}>
+    <Box
+      sx={{
+        p: 2,
+        m: 1,
+        borderRadius: 2,
+        boxShadow: 3,
+        minHeight: "calc(100vh - 113px)",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       <Typography variant="h5" gutterBottom>
         {employeeId ? "Update Employee" : "Add Employee"}
       </Typography>
 
-      <form onSubmit={handleSubmit}>
-        <Box mb={4}>
+      <form
+        onSubmit={handleSubmit}
+        style={{ display: "flex", flexDirection: "column", flexGrow: 1 }}
+      >
+        <Box sx={{ flexGrow: 1, overflowY: "auto" }}>
           <Typography variant="h6" gutterBottom>
             Personal Info
           </Typography>
           <Divider sx={{ mb: 2 }} />
           <Grid container spacing={2}>
-            <Grid size={{ xs: 12, md: 8 }}>
-              <Grid container spacing={2}>
-                {[
-                  { label: "Full Name", name: "fullName" },
-                  { label: "Email Address", name: "email", type: "email" },
-                  { label: "Phone Number", name: "phone" },
-                  { label: "Date of Birth", name: "dateOfBirth", type: "date" },
-                  {
-                    label: "Emergency Contact Name",
-                    name: "emergencyContactName",
-                  },
-                  {
-                    label: "Emergency Contact Number",
-                    name: "emergencyContact",
-                  },
-                ].map((field) => (
-                  <Grid size={{ xs: 12, sm: 6 }} key={field.name}>
-                    <TextField
-                      fullWidth
-                      label={field.label}
-                      name={field.name}
-                      type={field.type || "text"}
-                      value={formData[field.name]}
-                      onChange={handleChange}
-                      error={!!formErrors[field.name]}
-                      helperText={formErrors[field.name]}
-                      InputLabelProps={
-                        field.type === "date" ? { shrink: true } : undefined
-                      }
-                    />
-                  </Grid>
-                ))}
-              </Grid>
-            </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
-              <FormControl
-                fullWidth
-                error={!!formErrors.profilePicture}
-                sx={{ mt: 2 }}
-              >
+              <FormControl fullWidth error={!!formErrors.profilePicture}>
                 <Box
                   display="flex"
                   flexDirection="column"
@@ -324,6 +299,10 @@ const EmployeeForm = () => {
                               profilePicture: reader.result,
                               profilePreview: reader.result,
                             }));
+                            setFormErrors((prevErrors) => ({
+                              ...prevErrors,
+                              profilePicture: "",
+                            }));
                           };
                           reader.readAsDataURL(file);
                         }
@@ -340,6 +319,62 @@ const EmployeeForm = () => {
                   <FormHelperText>{formErrors.profilePicture}</FormHelperText>
                 )}
               </FormControl>
+            </Grid>
+            <Grid size={{ xs: 12, md: 8 }}>
+              <Grid container spacing={2}>
+                {[
+                  { label: "Full Name", name: "fullName" },
+                  { label: "Email Address", name: "email", type: "email" },
+                  { label: "Phone Number", name: "phone" },
+                  { label: "Date of Birth", name: "dateOfBirth", type: "date" },
+                ].map((field) => (
+                  <Grid size={{ xs: 12, sm: 6 }} key={field.name}>
+                    <TextField
+                      fullWidth
+                      label={field.label}
+                      name={field.name}
+                      type={field.type || "text"}
+                      value={formData[field.name]}
+                      onChange={handleChange}
+                      error={!!formErrors[field.name]}
+                      helperText={formErrors[field.name]}
+                      InputLabelProps={
+                        field.type === "date" ? { shrink: true } : undefined
+                      }
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+            </Grid>
+          </Grid>
+        </Box>
+        <Box mb={4}>
+          <Typography variant="h6" gutterBottom>
+            Emergency Contact Details
+          </Typography>
+          <Divider sx={{ mb: 2 }} />
+          <Grid container spacing={2}>
+            <Grid size={{ xs: 12, md: 4 }}>
+              <TextField
+                fullWidth
+                label="Emergency Contact Name"
+                name="emergencyContactName"
+                value={formData.emergencyContactName}
+                onChange={handleChange}
+                error={!!formErrors.emergencyContactName}
+                helperText={formErrors.emergencyContactName}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, md: 4 }}>
+              <TextField
+                fullWidth
+                label="Emergency Contact Number"
+                name="emergencyContact"
+                value={formData.emergencyContact}
+                onChange={handleChange}
+                error={!!formErrors.emergencyContact}
+                helperText={formErrors.emergencyContact}
+              />
             </Grid>
           </Grid>
         </Box>
